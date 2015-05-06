@@ -1,0 +1,140 @@
+# Description: This MIQ Method will create a new Amazon EC2 instance
+# from the criteria selected in the marketplace
+# For use in Service/Provisioning/StateMachines/Methods/CreateEC2
+
+require 'aws-sdk'
+require 'net/http'
+require 'uri/http'
+require 'json'
+
+def send_order_status(referer, headers, status, order_id, information, message = '')
+  path = "/order_items/#{order_id}/provision_update"
+  host = URI.parse(referer).host
+  url = "http://#{host}#{path}"
+  uri = URI.parse(url)
+
+  information = information.merge('provision_status' => status.downcase)
+  $evm.log('info', "send_order_status: Information: #{information}")
+  json = {
+    status: "#{status}",
+    message: "#{message}",
+    info: information
+  }
+  $evm.log('info', "send_order_status: Information #{json}")
+  begin
+    http = Net::HTTP.new(uri.host, uri.port)
+    request = Net::HTTP::Put.new(uri.path)
+    request.add_field('X-Staff-Email', "#{headers[0]}")
+    request.add_field('X-Staff-Token', "#{headers[1]}")
+    request.content_type = 'application/json'
+    request.body = json.to_json
+    response = http.request(request)
+    $evm.log('info', "send_order_status: HTTP Response code: #{response.code}")
+    $evm.log('info', "send_order_status: HTTP Response message: #{response.message}")
+  rescue StandardError => e
+    $evm.log('error', "send_order_status: Exception caught while sending response back to core: #{e.message}")
+  end
+end # End of function
+
+# Retrieve properties from request
+# MIQ makes product_details into a string.
+# Must make into a hash
+product_details = $evm.root['dialog_order_item']
+order_item_hash = JSON.parse(product_details.gsub("'", '"').gsub('=>', ':'))
+product_hash = order_item_hash['product_details']
+order_id = order_item_hash['id']
+uuid = order_item_hash['uuid']
+access_key_id = product_hash['access_key_id']
+secret_access_key = product_hash['secret_access_key']
+image_id = product_hash['image_id']
+instance_type = product_hash['instance_type']
+count = product_hash['count']
+availability_zone = product_hash['availability_zone']
+security_groups = product_hash['security_groups']
+key_name = product_hash['key_name']
+instance_name = product_hash['instance_name']
+host = $evm.root['dialog_referer']
+headers = [$evm.root['dialog_email'], $evm.root['dialog_token']]
+
+# Configure AWS
+AWS.config(
+  access_key_id: access_key_id,
+  secret_access_key: secret_access_key
+)
+
+# Create the new EC2 instance
+ec2 = AWS::EC2.new
+
+# Create the hash of options for the specified VM
+options = {
+  image_id: image_id,
+  instance_type: instance_type,
+  count: count,
+  availability_zone: availability_zone,
+  security_groups: security_groups,
+  key_name: key_name
+}
+
+# Remove all empty strings from the options list
+# to avoid error in creation of EC2 instance
+options.each do |key, value|
+  options.delete(key) if value == '' || value.nil?
+end
+
+$evm.log('info', "CreateEC2: Options: #{options}")
+
+begin
+  info = {
+    'id' => order_id,
+    'uuid' => uuid
+  }
+  instance = ec2.instances.create(options)
+rescue AWS::EC2::Errors::InvalidClientTokenId => e
+  $evm.log('error', "CreateEC2: Invalid client token exception. Message: #{e.message}")
+  send_order_status(host, headers, 'CRITICAL', order_id, info, "#{e.message}")
+  exit
+rescue AWS::EC2::Errors::InvalidParameterValue => e
+  $evm.log('error', "CreateEC2: Invalid parameter exception. Message: #{e.message}")
+  send_order_status(host, headers, 'CRITICAL', order_id, info, "#{e.message}")
+  exit
+rescue StandardError => e
+  $evm.log('error', "CreateEC2: Could not create instance. Error: #{e}")
+  send_order_status(host, headers, 'CRITICAL', order_id, info, "#{e.message}")
+  exit
+end
+
+# Amazon needs ~5 seconds before the instance can be accessed
+# From the time it is initially created.
+sleep 5
+sleep 5 while instance.status == :pending if instance.exists?
+
+# Return all of the properties inside of a JSON Response
+# But first just print them all out
+
+info = {
+  'id' => order_id,
+  'uuid' => uuid,
+  'instance_name' => instance_name,
+  'order_item' => order_id,
+  'architecture' => instance.architecture,
+  'dns_name' => instance.dns_name,
+  'id' => instance.id,
+  'image_id' => instance.image_id,
+  'instance_type' => instance.instance_type,
+  'ip_address' =>  instance.ip_address,
+  'key_name' => instance.key_name,
+  'launch_time' => instance.launch_time,
+  'owner_id' => instance.owner_id,
+  'platform' => instance.platform,
+  'private_ip_address' => instance.private_ip_address,
+  'root_device_name' => instance.root_device_name,
+  'root_device_type' => instance.root_device_type,
+  'instance' => instance.status,
+  'subnet_id' => instance.subnet_id,
+  'virtualization_type' => instance.virtualization_type,
+  'vpc_id' => instance.vpc_id
+}
+
+response = send_order_status(host, headers, 'OK', order_id, info)
+
+$evm.log('info', "CreateEC2: Response =  #{response}")
