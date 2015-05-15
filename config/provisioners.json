@@ -1,0 +1,6 @@
+{
+  "ManageIQ Databases": "Jellyfish::ManageIQ::Databases",
+  "ManageIQ Big Data": "Jellyfish::ManageIQ::BigData",
+  "ManageIQ Storage": "Jellyfish::ManageIQ::Storage",
+  "ManageIQ Infrastructure": "Jellyfish::ManageIQ::Infrastructure"
+}

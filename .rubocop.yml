@@ -3,6 +3,7 @@ AllCops:
     - config/unicorn.rb
     - bin/**
     - lib/tasks/sample.rake
+    - spec/dummy/db/**
   RunRailsCops: true
 
 ClassLength:

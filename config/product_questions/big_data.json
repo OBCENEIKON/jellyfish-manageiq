@@ -1,0 +1,50 @@
+{
+  "type": "object",
+  "title": "ManageIQ Big Data",
+  "description": "ManageIQ Big Data",
+  "required": ["CloudProvider", "ServiceCatalogId", "ServiceTemplateId", "CpuCount", "DiskSize", "RamSize"],
+  "properties": {
+    "CloudProvider": {
+      "title": "Cloud Provider",
+      "type": "string",
+      "enum": [
+        "OpenStack",
+        "Google",
+        "VMware",
+        "Rackspace",
+        "Azure",
+        "AWS",
+        "Other"
+      ],
+      "default": "AWS"
+    },
+    "ChefRole": {
+      "title": "Chef Role",
+      "type": "string"
+    },
+    "ServiceCatalogId": {
+      "title": "ManageIQ Service Catalog ID",
+      "type": "string"
+    },
+    "ServiceTemplateId": {
+      "title": "ManageIQ Service Template ID",
+      "type": "string"
+    },
+    "CpuCount": {
+      "title": "CPU",
+      "type": "string",
+      "enum": ["1", "2", "4", "6", "8"],
+      "default": "1"
+    },
+    "DiskSize": {
+      "title": "Disk Size",
+      "type": "string",
+      "default": "40"
+    },
+    "RamSize": {
+      "title": "RAM",
+      "type": "string",
+      "default": "4"
+    }
+  }
+}

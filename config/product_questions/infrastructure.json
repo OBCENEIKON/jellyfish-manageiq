@@ -1,0 +1,49 @@
+{
+  "type": "object",
+  "title": "ManageIQ Infrastructure",
+  "description": "ManageIQ Infrastructure",
+  "required": ["CloudProvider", "ServiceCatalogId", "ServiceTemplateId", "InstanceSize", "DiskSize"],
+  "properties": {
+    "CloudProvider": {
+      "title": "Cloud Provider",
+      "type": "string",
+      "enum": [
+        "OpenStack",
+        "Google",
+        "VMware",
+        "Rackspace",
+        "Azure",
+        "AWS",
+        "Other"
+      ],
+      "default": "AWS"
+    },
+    "ChefRole": {
+      "title": "Chef Role",
+      "type": "string"
+    },
+    "ServiceCatalogId": {
+      "title": "ManageIQ Service Catalog ID",
+      "type": "string"
+    },
+    "ServiceTemplateId": {
+      "title": "ManageIQ Service Template ID",
+      "type": "string"
+    },
+    "InstanceSize": {
+      "title": "Instance Size",
+      "type": "string",
+      "enum": [
+        "t2.micro",
+        "m3.medium",
+        "m3.large"
+      ],
+      "default": "m3.medium"
+    },
+    "DiskSize": {
+      "title": "Disk Size",
+      "type": "string",
+      "default": "40"
+    }
+  }
+}
