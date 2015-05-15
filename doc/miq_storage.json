@@ -1,0 +1,56 @@
+{
+  "type": "object",
+  "title": "Storage",
+  "required": ["availability", "region"],
+  "properties": {
+    "cloud_provider": {
+      "title": "Cloud Provider",
+      "type": "string",
+      "enum": [
+        "OpenStack",
+        "Google",
+        "VMware",
+        "Rackspace",
+        "Azure",
+        "AWS",
+        "Other"
+      ],
+      "default": "AWS"
+    },
+    "chef_role": {
+      "title": "Chef Role",
+      "type": "string"
+    },
+    "service_catalog_id": {
+      "title": "ManageIQ Service Catalog ID",
+      "type": "string"
+    },
+    "service_template_id": {
+      "title": "ManageIQ Service Template ID",
+      "type": "string"
+    },
+    "availability": {
+      "title": "Storage Redundancy",
+      "type": "string",
+      "enum": [
+        "normal",
+        "reduced"
+      ],
+      "default": "normal"
+    },
+    "region": {
+      "title": "DB Engine",
+      "type": "string",
+      "enum": [
+        "",
+        "us-west-1",
+        "us-west-2",
+        "EU",
+        "ap-northeast-1",
+        "ap-southeast-1",
+        "ap-southeast-2"
+      ],
+      "default": ""
+    }
+  }
+}

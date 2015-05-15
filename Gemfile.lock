@@ -2,15 +2,13 @@ PATH
   remote: .
   specs:
     jellyfish-manageiq (0.0.1)
-      daemons
-      delayed_job_active_record
-      dotenv-rails
+      apipie-rails (~> 0.2.6)
       jellyfish-provisioner
       pundit
       rails
-      rails-observers
       rake
       rest-client
+      rufus-scheduler
       virtus
 
 GEM
@@ -51,6 +49,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    apipie-rails (0.2.6)
+      json
     arel (6.0.0)
     ast (2.0.0)
     astrolabe (1.3.0)
@@ -64,13 +64,7 @@ GEM
     coderay (1.1.0)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
-    daemons (1.2.2)
     database_cleaner (1.3.0)
-    delayed_job (4.0.6)
-      activesupport (>= 3.0, < 5.0)
-    delayed_job_active_record (4.0.3)
-      activerecord (>= 3.0, < 5.0)
-      delayed_job (>= 3.0, < 4.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.2.5)
@@ -99,7 +93,7 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
-    mime-types (2.5)
+    mime-types (2.4.3)
     mini_portile (0.6.2)
     minitest (5.5.1)
     netrc (0.10.3)
@@ -141,8 +135,6 @@ GEM
       rails-deprecated_sanitizer (>= 1.0.1)
     rails-html-sanitizer (1.0.1)
       loofah (~> 2.0)
-    rails-observers (0.1.2)
-      activemodel (~> 4.0)
     railties (4.2.0)
       actionpack (= 4.2.0)
       activesupport (= 4.2.0)
@@ -178,8 +170,10 @@ GEM
       rainbow (>= 1.99.1, < 3.0)
       ruby-progressbar (~> 1.4)
     ruby-progressbar (1.7.1)
+    rufus-scheduler (3.0.9)
+      tzinfo
     slop (3.6.0)
-    sprockets (3.0.3)
+    sprockets (3.0.2)
       rack (~> 1.0)
     sprockets-rails (2.2.4)
       actionpack (>= 3.0)

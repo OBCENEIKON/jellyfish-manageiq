@@ -1,0 +1,79 @@
+{
+  "type": "object",
+  "title": "ManageIQ Databases",
+  "description": "ManageIQ Databases",
+  "required": ["CloudProvider", "ServiceCatalogId", "ServiceTemplateId", "DBInstanceClass", "Engine", "AllocatedStorage"],
+  "properties": {
+    "CloudProvider": {
+      "title": "Cloud Provider",
+      "type": "string",
+      "enum": [
+        "OpenStack",
+        "Google",
+        "VMware",
+        "Rackspace",
+        "Azure",
+        "AWS",
+        "Other"
+      ],
+      "default": "AWS"
+    },
+    "ChefRole": {
+      "title": "Chef Role",
+      "type": "string"
+    },
+    "ServiceCatalogId": {
+      "title": "ManageIQ Service Catalog ID",
+      "type": "string"
+    },
+    "ServiceTemplateId": {
+      "title": "ManageIQ Service Template ID",
+      "type": "string"
+    },
+    "DBInstanceClass": {
+      "title": "DB Instance Size",
+      "type": "string",
+      "enum": [
+        "db.m3.medium",
+        "db.m3.large",
+        "db.m3.xlarge"
+      ],
+      "default": "db.m3.medium"
+    },
+    "Engine": {
+      "title": "DB Engine",
+      "type": "string",
+      "enum": [
+        "aurora",
+        "mysql",
+        "postgresql",
+        "sqlserver"
+      ]
+    },
+    "AllocatedStorage": {
+      "title": "Disk Size",
+      "type": "string",
+      "default": "40"
+    },
+    "StorageType": {
+      "title": "Storage Type",
+      "type": "string",
+      "enum": [
+        "ssd",
+        "standard",
+        "gp2",
+        "io1"
+      ],
+      "default": "ssd"
+    },
+    "availability": {
+      "title": "Storage Redundancy",
+      "type": "string",
+      "enum": [
+        "normal",
+        "reduced"
+      ],
+      "default": "normal"
+    }
+  }
+}
