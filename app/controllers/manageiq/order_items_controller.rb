@@ -5,7 +5,7 @@ module Manageiq
     before_action :load_order_item, only: [:start_service, :stop_service]
     before_action :load_order_item_for_update, only: :provision_update
 
-    api :PUT, '/manageiq/order_item/:order_item_id/start_service', 'Starts service for a provisioned order item'
+    api :PUT, '/manageiq/order_items/:order_item_id/start_service', 'Starts service for a provisioned order item'
     param :id, :number, required: true
 
     def start_service
@@ -14,7 +14,7 @@ module Manageiq
       render nothing: true, status: :ok
     end
 
-    api :PUT, '/manageiq/order_item/:id/stop_service', 'Stops service for a provisioned order item'
+    api :PUT, '/manageiq/order_items/:id/stop_service', 'Stops service for a provisioned order item'
     param :id, :number, required: true
 
     def stop_service
@@ -23,17 +23,7 @@ module Manageiq
       render nothing: true, status: :ok
     end
 
-    api :PUT, '/manageiq/order_item/:id/retire_service'
-    param :id, :number, required: true
-
-    def retire_service
-      order_item = OrderItem.find(params[:id])
-      authorize order_item
-      order_item.provisioner.delay(queue: 'retire_request').retire
-      render nothing: true, status: :ok
-    end
-
-    api :PUT, '/manageiq/order_item/:id/provision_update', 'Updates a provisioned order item from ManageIQ'
+    api :PUT, '/manageiq/order_items/:id/provision_update', 'Updates a provisioned order item from ManageIQ'
     param :id, :number, required: true, desc: 'Order Item ID'
     param :status, String, required: true, desc: 'Status of the provision request'
     param :message, String, required: true, desc: 'Any messages from ManageIQ'
