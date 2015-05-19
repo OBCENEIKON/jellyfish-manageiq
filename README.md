@@ -101,9 +101,11 @@ The **catalog_id** is what is needed to configure products. This value is the Ma
 For the automation methods currently provided in jellyfish-core, each one requires a separate Catalog Item with the appropriate retirement method included.
 
 # ENV ManageIQ settings
+```
 MIQ_URL=<ManageIQ URL>
 MIQ_USERNAME=<username>
 MIQ_PASSWORD=<password>
+```
 
 # Get the status of VM's from ManageIQ
 rake upkeep:poll_miq_vms
