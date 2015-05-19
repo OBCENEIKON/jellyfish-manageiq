@@ -2205,3 +2205,4 @@ AbstractController::ActionNotFound (The action 'start_service' could not be foun
 
 
   Rendered /Users/isapple/.rbenv/versions/2.2.2/lib/ruby/gems/2.2.0/gems/web-console-2.0.0/lib/action_dispatch/templates/rescues/unknown_action.html.erb within rescues/layout (0.3ms)
+DEPRECATION WARNING: `named_routes.helpers` is deprecated, please use `route_defined?(route_name)` to see if a named route was defined. (called from __pry__ at (pry):1)
