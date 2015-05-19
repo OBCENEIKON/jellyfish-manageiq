@@ -39,7 +39,7 @@ product_hash = order_item_hash['product_details']
 order_id = order_item_hash['id']
 uuid = order_item_hash['uuid']
 datacenter = product_hash['datacenter']
-endpoint = product_hash['host']
+endpoint = $evm.root['dialog_referer']
 port = Integer(product_hash['port']) unless product_hash['port'].nil || product_hash[port] == ''
 user = product_hash['user']
 password = product_hash['password']
