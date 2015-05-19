@@ -13,11 +13,8 @@ require 'json'
 
 $evm.log('info', 'ProvisionRDS: Entering Method.')
 
-def send_order_status(referer, headers, status, order_id, information, message = '')
-  path = "/order_items/#{order_id}/provision_update"
-  host = URI.parse(referer).host
-  url = "http://#{host}#{path}"
-  uri = URI.parse(url)
+def send_order_status(endpoint, headers, status, information, message = '')
+  uri = URI.parse(endpoint)
 
   information = information.merge('provision_status' => status.downcase)
   $evm.log('info', "send_order_status: Information: #{information}")
@@ -60,7 +57,7 @@ uuid = order_item_hash['uuid']
 access_key_id = product_hash['access_key_id']
 secret_key = product_hash['secret_access_key']
 db_instance_id = $evm.root['db_instance_id']
-host = $evm.root['dialog_referer']
+endpoint = $evm.root['dialog_referer']
 headers = [$evm.root['dialog_email'], $evm.root['dialog_token']]
 
 # Retrieve request properties from the product hash
@@ -79,11 +76,11 @@ begin
   }
 rescue AWS::RDS::Errors::InvalidClientTokenId => e
   $evm.log('error', 'ProvisionRDS: Exception caught when creating instance: #{e.message}')
-  send_order_status(host, headers, 'CRITICAL', order_id, info, "#{e.message}")
+  send_order_status(endpoint, headers, 'CRITICAL', info, "#{e.message}")
   exit
 rescue AWS::RDS::Errors => e
   $evm.log('error', "ProvisionRDS: Exception caught when creating instance: #{e.message}")
-  send_order_status(host, headers, 'CRITICAL', order_id, info, "#{e.message}")
+  send_order_status(endpoint, headers, 'CRITICAL', info, "#{e.message}")
   exit
 end
 
@@ -108,13 +105,13 @@ if instance.exists?
     'instance_storage' => "#{$evm.root['dialog_allocated_storage']}"
   }
   $evm.log('info', "ProvisionRDS: Generated the RDS with the following information #{information}")
-  send_order_status(host, headers, 'OK', order_id, information)
+  send_order_status(endpoint, headers, 'OK', information)
 else # If the instance did not exist
   $evm.log('info', "ProvisionRDS: Instance #{db_instance_id} was not created and does not exist")
   info = {
     'order_id' => "#{order_id}"
   }
-  send_order_status(host, headers, 'CRITICAL', order_id, info, 'Instance was not created and does not exist')
+  send_order_status(endpoint, headers, 'CRITICAL', info, 'Instance was not created and does not exist')
 end
 
 $evm.log('info', "ProvisionRDS: Instance #{db_instance_id} created")
