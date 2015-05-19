@@ -6,13 +6,10 @@ require 'net/http'
 require 'chef/http'
 require 'json'
 
-def send_order_status(referer, headers, status, information, message = '')
+def send_order_status(endpoint, headers, status, information, message = '')
   order_id = information[:id]
   $evm.log('info', "send_order_status: Got order_id: #{order_id}")
-  path = "/order_items/#{order_id}/provision_update"
-  host = URI.parse(referer).host
-  url = "http://#{host}#{path}"
-  uri = URI.parse(url)
+  uri = URI.parse(endpoint)
 
   information = information.merge('provision_status' => status.downcase)
   $evm.log('info', "send_order_status: Information: #{information}")
@@ -51,7 +48,7 @@ chef_role = product_hash['chef_role']
 $evm.log('info', 'chef_automation: chef role was not nil.')
 $evm.log('info', "chef_automation: chef role #{chef_role}")
 chef_run_list = product_hash['chef_run_list']
-referer = $evm.root['dialog_referer']
+endpoint = $evm.root['dialog_referer']
 headers = [$evm.root['dialog_email'], $evm.root['dialog_token']]
 
 info = {
@@ -64,7 +61,7 @@ info = {
 begin
   Chef::Config.from_file('//etc/chef/client.rb')
 rescue StandardError => e
-  send_order_status(referer, headers, 'CRITICAL', info, e.message)
+  send_order_status(endpoint, headers, 'CRITICAL', info, e.message)
   $evm.log('error', 'chef_automation: Did not create the node.')
   exit
 end
@@ -90,7 +87,7 @@ begin
   new_node = node.json_create(hash)
   new_node.create
 rescue StandardError => e
-  send_order_status(referer, headers, 'CRITICAL', info, e.message)
+  send_order_status(endpoint, headers, 'CRITICAL', info, e.message)
   $evm.log('error', 'chef_automation: Did not create the node.')
   exit
 end
