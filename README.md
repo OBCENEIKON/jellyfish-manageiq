@@ -108,4 +108,6 @@ MIQ_PASSWORD=<password>
 ```
 
 # Get the status of VM's from ManageIQ
-rake upkeep:poll_miq_vms
+```
+rake jellyfish:manageiq:pollvms
+```
