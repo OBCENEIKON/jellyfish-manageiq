@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jellyfish-manageiq (0.0.1)
+    jellyfish-manageiq (0.0.2)
       apipie-rails (~> 0.2.6)
       jellyfish-provisioner
       pundit
