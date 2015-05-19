@@ -11,11 +11,8 @@ require 'json'
 
 $evm.log('info', 'RetireSES: Entering method')
 
-def send_order_status(referer, headers, status, order_id, information, message = '')
-  path = "/order_items/#{order_id}/provision_update"
-  host = URI.parse(referer).host
-  url = "http://#{host}#{path}"
-  uri = URI.parse(url)
+def send_order_status(endpoint, headers, status, information, message = '')
+  uri = URI.parse(endpoint)
 
   information = information.merge('provision_status' => status.downcase)
   $evm.log('info', "send_order_status: Information: #{information}")
@@ -50,7 +47,7 @@ uuid = order_item_hash['uuid']
 access_key = product_hash['access_key_id']
 secret_access_key = product_hash['secret_access_key']
 email = product_hash['email']
-host = $evm.root['dialog_referer']
+endpoint = $evm.root['dialog_referer']
 headers = [$evm.root['dialog_email'], $evm.root['dialog_token']]
 
 AWS.config(
@@ -78,21 +75,21 @@ if email != ''
     end
   rescue AWS::SimpleEmailService::Errors::InvalidClientTokenId => e
     $evm.log('error', "RetireSES: Exception caught when creating instance: #{e.message}")
-    send_order_status(host, headers, 'CRITICAL', order_id, info, "#{e.message}")
+    send_order_status(endpoint, headers, 'CRITICAL', info, "#{e.message}")
     exit
   rescue AWS::SimpleEmailService::Errors::InvalidParameterValue => e
     $evm.log('error', "RetireSES: Invalid parameter exception caught: #{e.message}")
-    send_order_status(host, headers, 'CRITICAL', order_id, info, "#{e.message}")
+    send_order_status(endpoint, headers, 'CRITICAL', info, "#{e.message}")
     exit
   rescue AWS::SimpleEmailService::Errors => e
     $evm.log('error', "RetireSES: Exception caught: #{e.message}")
-    send_order_status(host, headers, 'CRITICAL', order_id, info, "#{e.message}")
+    send_order_status(endpoint, headers, 'CRITICAL', info, "#{e.message}")
     exit
   rescue StandardError => e
     $evm.log('error', "RetireSES: Exception caught #{e.message}")
-    send_order_status(host, headers, 'CRITICAL', order_id, info, "#{e.message}")
+    send_order_status(endpoint, headers, 'CRITICAL', info, "#{e.message}")
     exit
   end
 end
 
-send_order_status(host, headers, 'OK', order_id, info, 'Instance retired.')
+send_order_status(endpoint, headers, 'OK', info, 'Instance retired.')
