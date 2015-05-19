@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    jellyfish-manageiq (0.0.1)
+    jellyfish-manageiq (0.0.3)
       apipie-rails (~> 0.2.6)
       jellyfish-provisioner
       pundit
@@ -93,7 +93,7 @@ GEM
     mail (2.6.3)
       mime-types (>= 1.16, < 3)
     method_source (0.8.2)
-    mime-types (2.4.3)
+    mime-types (2.5)
     mini_portile (0.6.2)
     minitest (5.5.1)
     netrc (0.10.3)
@@ -173,7 +173,7 @@ GEM
     rufus-scheduler (3.0.9)
       tzinfo
     slop (3.6.0)
-    sprockets (3.0.2)
+    sprockets (3.0.3)
       rack (~> 1.0)
     sprockets-rails (2.2.4)
       actionpack (>= 3.0)
